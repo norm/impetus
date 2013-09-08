@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<head>
+  <meta charset='utf-8'>
+  <title>Impetus</title>
+  <style>
+    html,body {
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 20px;
+      padding: 0 40px;
+      line-height: 1.4;
+    }
+    
+    #instructions {
+      width: 800px;
+    }
+    
+    #content {
+      width: 1000px;
+      float: left;
+    }
+    #controls {
+      float: left;
+      margin-left: 60px;
+    }
+    #main {
+      width: 600px;
+      float: left;
+      margin-top: 40px;
+    }
+    #meta {
+      width: 300px;
+      float: left;
+    }
+    
+    h1 {
+      font-weight: 300;
+      font-size: 40px;
+      margin: 0;
+      padding: 0;
+    }
+    h2 {
+      font-size: 20px;
+      color: #999;
+      margin: 40px 0 0;
+      padding: 0;
+    }
+    button {
+      font-family: 'Helvetica Neue', sans-serif;
+      text-transform: uppercase;
+      background: #ccc;
+      border: none;
+      margin: 0;
+      margin: 2px;
+      outline: 1px solid #aaa;
+      color: #888;
+    }
+    button.active {
+      background: #cfc;
+      color: #8c8;
+      outline: 1px solid #ada;
+    }
+    .off {
+      display: none;
+    }
+    dt {
+      font-weight: bold;
+    }
+    dd {
+      margin-bottom: 20px;
+    }
+    code {
+      color: #333;
+      font-weight: bold;
+      padding: 1px 3px;
+      outline: 1px solid #ccc;
+      background: #eee;
+    }
+    
+    #requester {
+      margin: 25px 0 30px;
+      margin: 0;
+      clear: left;
+      font-size: 15px;
+      color: #999;
+    }
+    #requester b {
+      font-weight: normal;
+    }
+    #requester i {
+      font-style: normal;
+    }
+    
+    #labels {
+      margin: 10px 0;
+      padding: 0;
+      font-size: 15px;
+    }
+    #labels:after {
+      content: '';
+      display: block;
+      clear: both;
+    }
+    #labels li {
+      list-style: none;
+      color: #999;
+      color: #462;
+      margin-right: 15px;
+      float: left;
+    }
+    #labels li.epic {
+      color: #333;
+      color: #75b;
+    }
+    
+    #description p {
+      margin: 0 0 20px;
+    }
+    
+    #comments {
+      margin-top: 60px;
+    }
+    #comments ol {
+      margin: 0 0 0 30px;
+      padding: 0;
+    }
+    #comments li {
+      margin: 10px 0 10px -30px;
+    }
+    #meta {
+      width: 360px;
+      margin-left: 40px;
+      float: left;
+    }
+    #meta ol {
+      margin: 0;
+      padding: 0;
+    }
+    #controls button {
+      letter-spacing: 1px;
+      padding: 3px 8px;
+    }
+    #controls p {
+      margin: 10px 0 0;
+    }
+    #controls b {
+      letter-spacing: 2px;
+      color: #777;
+    }
+    
+    #tasks {
+      clear: left;
+      padding-top: 40px;
+    }
+    #tasks li {
+      list-style: none;
+      margin-left: -30px;
+      padding-left: 30px;
+    }
+    #tasks li:before {
+      float: left;
+      margin-left: -30px;
+      content: '☐ ';
+    }
+    #tasks li.complete {
+      color: #999;
+    }
+    #tasks li.complete:before {
+      content: '☑ ';
+    }
+  </style>
+</head>
+<body>
+  
+  <div id='actions'>
+    <div id='content'>
+      
+      <h1 id='name'>Story title</h1>
+      <ul id='labels'></ul>
+      <p id='requester'>Requested by <b>someone</b> on <i>date</i></p>
+      
+      <div id='main'>
+        <div id='description'><p></p></div>
+        <div id='comments' class='off'>
+          <h2>Comments</h2>
+          <ol></ol>
+        </div>
+      </div>
+      
+      <div id='meta'>
+        <div id='tasks'>
+          <ol></ol>
+        </div>
+      </div>
+      
+    </div>
+    
+    <div id='controls'>
+      <p><button id='next'><b>N</b>ext</button></p>
+      <p><button id='open'><b>O</b>pen</button></p>
+      <p>
+        <button id='zero' class='estimate'><b>0</b></button>
+        <button id='one' class='estimate'><b>1</b></button>
+        <button id='two' class='estimate'><b>2</b></button>
+        <button id='three' class='estimate'><b>3</b></button>
+        <button id='five' class='estimate'><b>5</b></button>
+        <button id='eight' class='estimate'><b>8</b></button>
+      </p>
+    </div>
+  </div>
+  
+  <div id='instructions' class='off'>
+    <h1>Instructions</h1>
+    <p>
+      Each unestimated story from the backlog will be displayed. To rate it,
+      click the rating button (or press the relevant key on the keyboard). To
+      skip it, click the next button (or press <code>N</code>). To open the
+      story in Pivotal Tracker for more control, click the open button (or
+      press <code>O</code>).
+    </p>
+    <p>Required parameters:</p>
+    <dl>
+      <dt><code>token</code></dt>
+      <dd>
+        Your API token, available from 
+        <a href='https://www.pivotaltracker.com/profile'>your profile page</a>
+        on Pivotal Tracker.
+      </dd>
+      <dt><code>project</code></dt>
+      <dd>
+        The ID of your project, the number found at the end of the URL
+        on the project dashboard.
+      </dd>
+    </dl>
+    <p>
+      for example: <code>…impetus.html?project=1234&amp;token=25ab65dfe</code>
+    </p>
+  </div>
+  
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script>
+    get_query_parameter = function(param) {
+      var find_query_param = new RegExp("[\\?&]" + param + "=([^&#]*)"),
+          value            = find_query_param.exec(document.location.search);
+      
+      if ( value != null ) {
+        return value[1];
+      }
+    };
+    
+    var PROJECT_ID = get_query_parameter('project'),
+        TOKEN      = get_query_parameter('token'),
+        BASE_URL   = 'https://www.pivotaltracker.com/services/v5/projects/'
+                     + PROJECT_ID,
+        MONTHS     = [
+          "January", "February", "March", "April", "May", "June",
+          "July", "August", "September", "October", "November", "December"
+        ],
+        stories    = [],
+        epics      = {},
+        people     = {},
+        current    = false,
+        story_id   = 0,
+        $next      = $('#next'),
+        $estimate  = $('button.estimate');
+    
+    if ( !PROJECT_ID || !TOKEN ) {
+      show_instructions();
+    }
+    
+    $.ajaxSetup({ headers: { 'X-TrackerToken': TOKEN } });
+    $next.on( 'click', fetch_next_story );
+    $estimate.each( function() {
+      $(this).on( 'click', function() {
+        rate_story( $(this).text(), this );
+      });
+    });
+    
+    $(document).on( 'keyup', keyboard_command );
+    
+    function keyboard_command(ev) {
+      if ( ev.keyCode == 78 ) {       // [N]
+        fetch_next_story();
+      }
+      else if ( ev.keyCode == 79 ) {  // [O]
+        open_story();
+      }
+      else if ( ev.keyCode == 48 ) {  // [0]
+        $('#zero').click();
+      }
+      else if ( ev.keyCode == 49 ) {  // [1]
+        $('#one').click();
+      }
+      else if ( ev.keyCode == 50 ) {  // [2]
+        $('#two').click();
+      }
+      else if ( ev.keyCode == 51 ) {  // [3]
+        $('#three').click();
+      }
+      else if ( ev.keyCode == 53 ) {  // [5]
+        $('#five').click();
+      }
+      else if ( ev.keyCode == 56 ) {  // [8]
+        $('#eight').click();
+      }
+      // else {
+      //   console.log('key pressed', ev.keyCode);
+      // }
+    }
+    function show_instructions() {
+      $('#instructions').removeClass('off');
+      $('#actions').addClass('off');
+    }
+    function rate_story(rating, element) {
+      console.log( 'rating', rating );
+      
+      var url  = BASE_URL + '/stories/' + story_id,
+          data = { estimate: rating };
+      
+      console.log( url, data );
+      $.ajax({
+        url: url,
+        type: 'PUT',
+        data: data,
+        success: function(res) {
+          console.log('result', res);
+          $('button.estimate').removeClass('active');
+          $(element).addClass('active');
+        }
+      });
+    }
+    function open_story() {
+      $('#open').addClass('active');
+      setTimeout( function(){ $('#open').removeClass('active'); }, 250 );
+      setTimeout( function(){ window.open( current ); }, 100 );
+    }
+    function display_task(task) {
+      var $li = $('<li>').text( task.description );
+      
+      if ( task.complete ) {
+        $li.addClass('complete');
+      }
+      
+      $('#tasks ol').append( $li );
+    }
+    function display_comment(comment) {
+      var $li  = $('<li>');
+          text = comment.text;
+      
+      if ( comment.file_attachment_ids.length ) {
+        text = '[attachment]';
+      }
+      
+      $li.text( text );
+      
+      $('#comments ol').append( $li );
+    }
+    function lookup_person(id) {
+      return people[id];
+    }
+    function display_no_more() {
+      $('#name').text( 'No more stories.' );
+      $('#tasks li').remove();
+      $('#comments li').remove();
+      $('#labels li').remove();
+      $('#description p').remove();
+      $('#requester').remove();
+      $('#next').removeClass('active');
+    }
+    function display_story(story) {
+      var description   = ' ',
+          readable_date = '';
+      
+      story.created_at.replace(
+        /(\d{4})-(\d{2})-(\d{2})/,
+        function( all, year, month, day ) {
+          readable_date = MONTHS[month-1] + ' ' + day + ', ' + year;
+        }
+      );
+      
+      if ( story.description ) {
+        description = story.description;
+        description = description.replace( /\n/g, '<br>' );
+      }
+      
+      $('#name').text( story.name );
+      $('#tasks li').remove();
+      $('#comments li').remove();
+      $('#labels li').remove();
+      $('#description p').html( description );
+      $('#requester b').text( lookup_person( story.requested_by_id ) );
+      $('#requester i').text( readable_date );
+      
+      if ( story.labels.length ) {
+        for ( var i in story.labels ) {
+          var label = story.labels[i].name,
+              $li = $('<li>').text( story.labels[i].name );
+          
+          console.log( 'label', label );
+          
+          if ( label in epics ) {
+            $li.addClass('epic');
+            $('#labels').prepend( $li );
+          }
+          else {
+            $('#labels').append( $li );
+          }
+        }
+      }
+      if ( story.comment_ids.length ) {
+        var url = BASE_URL + '/stories/' + story.id
+                  + '/comments?fields=:default,file_attachment_ids';
+        
+        $('#comments').removeClass('off');
+        
+        console.log(url);
+        $.ajax({
+          url: url,
+          success: function(data) {
+            console.log('comments', data);
+            for ( var i in data ) {
+              display_comment( data[i] );
+            }
+          }
+        });
+      }
+      else {
+        $('#comments').addClass('off');
+      }
+      if ( story.task_ids.length ) {
+        var url = BASE_URL + '/stories/' + story.id + '/tasks';
+        
+        console.log(url);
+        $.ajax({
+          url: url,
+          success: function(data) {
+            console.log('tasks', data);
+            for ( var i in data ) {
+              display_task( data[i] );
+            }
+          }
+        });
+      }
+    }
+    function fetch_next_story() {
+      $('#next').addClass('active');
+      if ( stories.length > 0 ) {
+        var story = stories.shift();
+        
+        // story = 56575436;
+        
+        var url = BASE_URL + '/stories/' + story
+                  + '?fields=:default,task_ids,comment_ids';
+        
+        console.log(url);
+        $.ajax({
+          url: url,
+          success: function(data) {
+            console.log(data);
+            
+            current  = data.url;
+            story_id = data.id;
+            
+            if ( data.estimate ) {
+              fetch_next_story();
+            }
+            else {
+              display_story(data);
+              $('#next').removeClass('active');
+            }
+          }
+        });
+      }
+      else {
+        display_no_more();
+      }
+    }
+    function fetch_people() {
+      var url = BASE_URL + '/memberships';
+      
+      console.log(url);
+      $.ajax({
+        url: url,
+        success: function(data) {
+          console.log('people' + data);
+          for ( var i in data ) {
+            var person = data[i].person;
+            people[ person.id ] = person.name;
+          }
+        }
+      });
+    }
+    function fetch_unstarted_stories() {
+      var url = BASE_URL + '/stories?filter=state:unstarted';
+      
+      console.log(url);
+      $.ajax({
+        url: url,
+        success: function(data) {
+          console.log('stories', data);
+          for ( var i in data ) {
+            var story = data[i];
+            
+            if ( story.story_type == 'feature' ) {
+              stories.push( story.id );
+            }
+          }
+          
+          fetch_next_story();
+        }
+      });
+    }
+    function fetch_epics() {
+      var url = BASE_URL + '/epics';
+      
+      console.log(url);
+      $.ajax({
+        url: url,
+        success: function(data) {
+          console.log('epics', data);
+          for ( var e in data ) {
+            var name = data[e].name;
+            epics[ name.toLowerCase() ] = 1;
+          }
+          
+          fetch_unstarted_stories();
+        }
+      });
+    }
+    
+    fetch_people();
+    fetch_epics();
+  </script>
+</body>
+
+
